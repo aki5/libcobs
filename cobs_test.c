@@ -29,7 +29,7 @@ int
 main(void)
 {
 	struct timeval tv;
-	int i, loop, len, enclen, declen;
+	size_t i, loop, len, enclen, declen, nrd;
 
 	gettimeofday(&tv, NULL);
 	srand48(tv.tv_sec ^ tv.tv_usec);
@@ -39,14 +39,21 @@ main(void)
 		for(i = 0; i < len; i++)
 			src[i] = lrand48() & 255;
 		enclen = cobs_encode(dst, sizeof dst, src, len);
+		for(i = enclen; i < sizeof dst; i++)
+			dst[i] = lrand48() & 255;
+		declen = cobs_decode(dec, sizeof dec, dst, sizeof dst, &nrd);
 		if(debug){
 			dump("src", src, len);
 			dump("enc", dst, enclen);
+			dump("dec", dec, declen);
 			printf("\n");
 		}
-		declen = cobs_decode(dec, sizeof dec, dst, sizeof dst, NULL);
+		if(nrd != enclen){
+			fprintf(stderr, "trouble! len %zu enclen %zu declen %zu nrd %zu\n", len, enclen, declen, nrd);
+			goto error_out;
+		}
 		if(declen != len){
-			fprintf(stderr, "trouble! len %d enclen %d declen %d\n", len, enclen, declen);
+			fprintf(stderr, "trouble! len %zu enclen %zu declen %zu nrd %zu\n", len, enclen, declen, nrd);
 			goto error_out;
 
 		}
