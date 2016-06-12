@@ -63,6 +63,19 @@ main(void)
 		}
 	}
 
+	for(loop = 0; loop < 10000; loop++){
+		len = lrand48() % MaxLen;
+		for(i = 0; i < len; i++)
+			src[i] = lrand48() & 255;
+		declen = cobs_decode(dec, sizeof dec, src, len, &nrd);
+		if((ssize_t)declen != -1){
+			if(nrd > len){
+				fprintf(stderr, "decoder misbehaved on random input! nrd %zu len %zu\n", nrd, len);
+				exit(1);
+			}
+		}
+	}
+
 	return 0;
 error_out:
 	dump("src", src, len);
