@@ -17,6 +17,8 @@ DOI= http://dx.doi.org/10.1109/90.769765
 The API has two calls, once for decoding and another one for encoding.
 Both calls read input from the `src` buffer and write their results to the `dst` buffer. The return value tells how many bytes were written to `dst`, or `-1` in case an error occurred.
 
+The last argument returns the number of bytes read from `src`, and is optional (can be passed as NULL).
+
 ```
 ssize_t cobs_encode(uint8_t *dst, size_t dstcap, uint8_t *src, size_t srclen, size_t *n);
 ssize_t cobs_decode(uint8_t *dst, size_t dstcap, uint8_t *src, size_t srclen, size_t *n);
