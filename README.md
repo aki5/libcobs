@@ -4,13 +4,15 @@
 
 Libcobs is a simple implementation of the consistent overhead byte stuffing algorithm for using the `0`-byte as a message terminator, and eliminating them from elsewhere in the data stream.
 
-The idea is described in the following paper
+Libcobs implements the end-of-message terminator with the two-byte sequence `0x01 0x00` so that this same pattern can be used to align to byte boundaries on a serial line.
+
+The idea is described in the paper [Consistent overhead Byte stuffing](http://www.stuartcheshire.org/papers/cobsforton.pdf)
 
 ```
 Cheshire, S. and Baker, M. 1999. Consistent overhead Byte stuffing.
 IEEE/ACM Trans. Netw. 7, 2 (Apr. 1999), 159-172.
-DOI= http://dx.doi.org/10.1109/90.769765
 ```
+
 
 ### Encoding and decoding API
 

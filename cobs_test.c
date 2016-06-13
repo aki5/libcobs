@@ -10,9 +10,9 @@ enum {
 	debug = 0,
 };
 
-uint8_t dst[2+(MaxLen*255/254)];
-uint8_t src[2+(MaxLen*255/254)];
-uint8_t dec[2+(MaxLen*255/254)];
+uint8_t dst[3+(MaxLen*255/254)];
+uint8_t src[3+(MaxLen*255/254)];
+uint8_t dec[3+(MaxLen*255/254)];
 
 void
 dump(char *tag, uint8_t *buf, size_t len)
