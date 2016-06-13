@@ -6,7 +6,9 @@
 #include "cobs.h"
 
 enum {
-	MaxLen = 3000,
+	ShortLen = 30,
+	NumShort = 100,
+	MaxLen = ShortLen*NumShort,
 	debug = 0,
 };
 
@@ -29,10 +31,40 @@ int
 main(void)
 {
 	struct timeval tv;
-	size_t i, loop, len, enclen, declen, nrd;
+	size_t i, loop, off, len, enclen, declen, nrd;
+	size_t lens[NumShort];
 
 	gettimeofday(&tv, NULL);
 	srand48(tv.tv_sec ^ tv.tv_usec);
+
+	off = 0;
+	declen = 0;
+	enclen = 0;
+	for(loop = 0; loop < NumShort; loop++){
+		len = lrand48() % ShortLen;
+		lens[loop] = len;
+		for(i = 0; i < len; i++)
+			src[i] = lrand48() & 255;
+		enclen = cobs_encode(dst+off, sizeof dst-off, src, len);
+		if((ssize_t)enclen == -1){
+			fprintf(stderr, "cobs_encode failed at off %zu loop %zu\n", off, loop);
+			goto error_out;
+		}
+		off += enclen;
+	}
+	off = 0;
+	for(loop = 0; loop < NumShort; loop++){
+		declen = cobs_decode(dec, sizeof dec, dst+off, sizeof dst-off, &nrd);
+		if(lens[loop] != declen){
+			fprintf(stderr, "cobs_decode nrd %zu declen %zu wanted %zu loop %zu\n", nrd, declen, lens[loop], loop);
+			goto error_out;
+		}
+		if((ssize_t)declen == -1){
+			fprintf(stderr, "cobs_decode failed at off %zu loop %zu\n", off, loop);
+			goto error_out;
+		}
+		off += nrd;
+	}
 
 	for(loop = 0; loop < 10000; loop++){
 		len = lrand48() % MaxLen;
