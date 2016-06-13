@@ -2,11 +2,13 @@
 
 [![Build Status](https://travis-ci.org/aki5/libcobs.svg?branch=master)](https://travis-ci.org/aki5/libcobs)
 
-Libcobs is a simple implementation of the consistent overhead byte stuffing algorithm for using the `0`-byte as a message terminator, and eliminating them from elsewhere in the data stream.
+Libcobs is a simple implementation of the consistent overhead byte stuffing algorithm for eliminating occurrences of the `0`-byte in a message. By eliminating the `0`-bytes from the payload, it becomes possible to use them for (re-)synchronizing a decoder to message boundaries.
 
-Libcobs implements the end-of-message terminator with the two-byte sequence `0x01 0x00` so that this same pattern can be used to align to byte boundaries on a serial line.
+Well known alternatives to COBS include bit-stuffing as used in HDLC and byte stuffing as used in PPP. The benefit of COBS is a lower worst case overhead than bit- or byte stuffing, without the software implementation challenges of bit stuffing.
 
-The idea is described in the paper [Consistent overhead Byte stuffing](http://www.stuartcheshire.org/papers/cobsforton.pdf)
+Libcobs implements the end-of-message terminator as the two-byte sequence `0x01 0x00` so that it can be used for alignment at either the bit- or the byte level. This can be useful with synchronous serial lines that have no byte framing.
+
+The idea is described concisely in the paper [Consistent overhead Byte stuffing](http://www.stuartcheshire.org/papers/cobsforton.pdf), with plenty of discussion and more advanced features. Libcobs provides a simple implementation of the basic insight.
 
 ```
 Cheshire, S. and Baker, M. 1999. Consistent overhead Byte stuffing.
